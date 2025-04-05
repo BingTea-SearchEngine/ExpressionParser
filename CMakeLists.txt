@@ -29,8 +29,11 @@ add_library(${THIS} STATIC ${LIB_DIR}/Parser.cpp ${LIB_DIR}/Tokenizer.hpp)
 target_include_directories(${THIS} PUBLIC ${LIB_DIR})
 
 add_executable(TestParser tests/TestParser.cpp)
-target_link_libraries(TestParser PRIVATE ${THIS} GTest::gtest_main)
+add_executable(TestTokenizer tests/TestTokenizer.cpp)
+target_link_libraries(TestParser PRIVATE ${THIS} GTest::gtest_main ${THIS})
+target_link_libraries(TestTokenizer PRIVATE ${THIS} GTest::gtest_main ${THIS})
 
 include(GoogleTest)
 gtest_discover_tests(TestParser)
+gtest_discover_tests(TestTokenizer)
 
