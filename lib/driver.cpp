@@ -5,7 +5,7 @@
 #include "Parser.hpp"
 
 int main(){
-    std::string input;
+    std::string input; // example: ( dogs AND cats birds ) NOT " good pets "
     std::getline(std::cin, input);
 
     Parser parser(input);
@@ -13,7 +13,7 @@ int main(){
     Expression *expr = parser.Parse();
 
     if(expr){
-        std::cout << expr->Eval() << std::endl;
+        std::cout << expr->Eval() << std::endl; // currently outputs a nested ISR structure as a string
         delete expr;
     }
     else{

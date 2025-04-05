@@ -13,6 +13,9 @@ Constraint::~Constraint(){
 }
 
 std::string Constraint::Eval() const{ // placeholder for an OR ISR
+    if(BCs.size() == 1){ // collapse level if there is only one child
+        return BCs[0]->Eval();
+    }
     std::stringstream ss;
     ss << "OrISR(";
     for(int i = 0; i < BCs.size(); i++){
@@ -36,6 +39,9 @@ BaseConstraint::~BaseConstraint(){
 }
 
 std::string BaseConstraint::Eval() const{ // placeholder for an AND ISR
+    if(SCs.size() == 1){ // collapse level if there is only one child
+        return SCs[0]->Eval();
+    }
     std::stringstream ss;
     ss << "AndISR(";
     for(int i = 0; i < SCs.size(); i++){
@@ -61,7 +67,7 @@ std::string SimpleConstraint::Eval() const{ // this just needs to evaluate inner
         return inner->Eval();
     }
     else{ // unary op
-        return std::string(1, type) + inner->Eval();
+        return "NotISR(" + inner->Eval() + ")";
     }
 }
 // class SimpleConstraint
@@ -76,6 +82,9 @@ Phrase::~Phrase(){
 }
     
 std::string Phrase::Eval() const{ // placeholder for a PHRASE ISR
+    if(SWs.size() == 1){ // collapse level if there is only one child
+        return SWs[0]->Eval();
+    }
     std::stringstream ss;
     ss << "PhraseISR(";
     for(int i = 0; i < SWs.size(); i++){
