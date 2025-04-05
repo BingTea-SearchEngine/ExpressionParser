@@ -5,7 +5,7 @@
 #include "Parser.hpp"
 
 int main(){
-    std::string input; // example: ( dogs AND cats birds ) NOT " good pets "
+    std::string input; // example: (dogs AND cats birds) NOT "good pets"
     std::getline(std::cin, input);
 
     Parser parser(input);
