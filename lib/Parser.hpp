@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Tokenizer.hpp"
-#include "expression.hpp"
 #include <string>
+
+#include "Tokenizer.hpp"
+#include "Expression.hpp"
 
 class Parser {
 private:
