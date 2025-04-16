@@ -41,38 +41,6 @@ void Tokenstream::AppendToken(TokenType type, const std::string& value){
 
 }
 
-// void Tokenstream::Tokenize(const std::string& input){
-//     std::istringstream iss(input);
-//     std::string curr;
-//     while(iss >> curr){ // for now all operations have to be seperated by a space eg no "dog|cat"
-//         if(curr == "|" || curr == "||" || curr == "OR"){
-//             AppendToken(TokenType::OROP, "");
-//         }
-//         else if(curr == "&" || curr == "&&" || curr == "AND"){
-//             AppendToken(TokenType::ANDOP, "");
-//         }
-//         else if(curr == "\""){
-//             AppendToken(TokenType::QUOTE, "");
-//         }
-//         else if(curr == "("){
-//             AppendToken(TokenType::LPAREN, "");
-//         }
-//         else if(curr == ")"){
-//             AppendToken(TokenType::RPAREN, "");
-//         }
-//         else if(curr == "NOT" || curr == "-"){
-//             AppendToken(TokenType::UNARYOP, "-");
-//         }
-//         else if(curr == "+"){
-//             AppendToken(TokenType::UNARYOP, "+");
-//         }
-//         else{
-//             AppendToken(TokenType::WORD, curr);
-//         }
-//     }
-//     AppendToken(TokenType::END, "");
-// }
-
 void Tokenstream::Tokenize(const std::string& input){
     size_t i = 0;
     while(i < input.size()){
@@ -88,15 +56,19 @@ void Tokenstream::Tokenize(const std::string& input){
             }
             if(word == "AND"){
                 AppendToken(TokenType::ANDOP, "");
+                Tokens.push_back("AND");
             } 
             else if(word == "OR"){
                 AppendToken(TokenType::OROP, "");
+                Tokens.push_back("OR");
             } 
             else if(word == "NOT"){
                 AppendToken(TokenType::UNARYOP, "-");
+                Tokens.push_back("NOT");
             }
             else{
                 AppendToken(TokenType::WORD, word);
+                Tokens.push_back(word);
             }
         }
         else{
@@ -106,24 +78,29 @@ void Tokenstream::Tokenize(const std::string& input){
                         i++;
                     }
                     AppendToken(TokenType::ANDOP, "");
+                    Tokens.push_back("AND");
                     break;
                 case '|':
                     if(i + 1 < input.size() && input[i + 1] == '|'){
                         i++;
                     }
                     AppendToken(TokenType::OROP, "");
+                    Tokens.push_back("OR");
                     break;
                 case '-':
                     AppendToken(TokenType::UNARYOP, "-");
+                    Tokens.push_back("NOT");
                     break;
                 case '+':
                     AppendToken(TokenType::UNARYOP, "+");
+                    Tokens.push_back("AND");
                     break;
                 case '"':
                     AppendToken(TokenType::QUOTE, "");
+                    Tokens.push_back("QUOTE");
                     break;
                 case '(':
-                    AppendToken(TokenType::LPAREN, "");
+                    AppendToken(TokenType::LPAREN, ""); // ranker does not need to know where parentheses are
                     break;
                 case ')':
                     AppendToken(TokenType::RPAREN, "");
@@ -146,6 +123,9 @@ void Tokenstream::Tokenize(const std::string& input){
     AppendToken(TokenType::END, "");
 }
 
+std::vector<std::string> getTokens(){
+    return Tokens;
+}
 
 // debugging function
 void Tokenstream::PrintTokens(){
