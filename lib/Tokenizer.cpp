@@ -63,7 +63,7 @@ void Tokenstream::Tokenize(const std::string& input){
                 Tokens.push_back("OR");
             } 
             else if(word == "NOT"){
-                AppendToken(TokenType::UNARYOP, "-");
+                AppendToken(TokenType::NOTOP, "-");
                 Tokens.push_back("NOT");
             }
             else{
@@ -88,12 +88,8 @@ void Tokenstream::Tokenize(const std::string& input){
                     Tokens.push_back("OR");
                     break;
                 case '-':
-                    AppendToken(TokenType::UNARYOP, "-");
+                    AppendToken(TokenType::NOTOP, "-");
                     Tokens.push_back("NOT");
-                    break;
-                case '+':
-                    AppendToken(TokenType::UNARYOP, "+");
-                    Tokens.push_back("AND");
                     break;
                 case '"':
                     AppendToken(TokenType::QUOTE, "");
@@ -123,7 +119,7 @@ void Tokenstream::Tokenize(const std::string& input){
     AppendToken(TokenType::END, "");
 }
 
-std::vector<std::string> getTokens(){
+std::vector<std::string> Tokenstream::getTokens(){
     return Tokens;
 }
 
@@ -146,7 +142,10 @@ void Tokenstream::PrintTokens(){
         else if(curr->type == TokenType::RPAREN){
             std::cout<<" )";
         }
-        else if(curr->type == TokenType::WORD || curr->type == TokenType::UNARYOP){
+        else if(curr->type == TokenType::NOTOP){
+            std::cout<<" NOT";
+        }
+        else if(curr->type == TokenType::WORD){
             std::cout<<" "<<curr->value;
         }
         curr = curr->next;

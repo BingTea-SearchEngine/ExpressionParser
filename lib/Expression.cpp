@@ -29,8 +29,8 @@ std::string Constraint::Eval() const{ // placeholder for an OR ISR
 }
 // class Constraint
 
-// <BaseConstraint> ::= <SimpleConstaint> { [ <AndOp> ] <SimpleConstraint> }
-BaseConstraint::BaseConstraint(std::vector<Expression*> SCin): SCs(SCin) {}
+// <BaseConstraint> ::= <SimpleConstraint> { [ <AndOp> ] <SimpleConstraint> } | <SimpleConstraint> <NotOp> <SimpleConstraint>
+BaseConstraint::BaseConstraint(std::vector<Expression*> SCin, std::string typein): SCs(SCin), type(typein) {}
 
 BaseConstraint::~BaseConstraint(){
     for(int i = 0; i < SCs.size(); i++){
@@ -38,37 +38,37 @@ BaseConstraint::~BaseConstraint(){
     }
 }
 
-std::string BaseConstraint::Eval() const{ // placeholder for an AND ISR
+std::string BaseConstraint::Eval() const{
     if(SCs.size() == 1){ // collapse level if there is only one child
         return SCs[0]->Eval();
     }
-    std::stringstream ss;
-    ss << "AndISR(";
-    for(int i = 0; i < SCs.size(); i++){
-        if(i > 0){
-            ss << ", ";
+    if(type == "And"){
+        std::stringstream ss;
+        ss << "AndISR(";
+        for(int i = 0; i < SCs.size(); i++){
+            if(i > 0){
+                ss << ", ";
+            }
+            ss << SCs[i]->Eval();
         }
-        ss << SCs[i]->Eval();
+        ss <<")";
+        return ss.str();
     }
-    ss <<")";
-    return ss.str();
+    else if(type == "Not"){ // not ISR only has two fields
+        return "NotISR(" + SCs[0]->Eval() + ", " + SCs[1]->Eval() + ")";
+    }
 }
 // class BaseConstraint
 
-// <SimpleConstraint> ::= <Phrase> | <NestedConstraint> | <UnaryOp> <SimpleConstraint> | <SearchWord>
-SimpleConstraint::SimpleConstraint(char typein, Expression* innerin): type(typein), inner(innerin) {}
+// <SimpleConstraint> ::= <Phrase> | <NestedConstraint> | <NotConstraint> | <SearchWord>
+SimpleConstraint::SimpleConstraint(Expression* innerin): inner(innerin) {}
    
 SimpleConstraint::~SimpleConstraint(){
     delete inner;
 }
 
 std::string SimpleConstraint::Eval() const{ // this just needs to evaluate inner
-    if(type == 'p' || type == 'n' || type == 's'){
-        return inner->Eval();
-    }
-    else{ // unary op
-        return "NotISR(" + inner->Eval() + ")";
-    }
+    return inner->Eval();
 }
 // class SimpleConstraint
 

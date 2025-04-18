@@ -9,7 +9,7 @@ enum class TokenType {
     OROP,       // OR, |, ||
     LPAREN,     // (
     RPAREN,     // )
-    UNARYOP,    // NOT, -, +
+    NOTOP,      // NOT, -
     END         // end of input
 };
 
